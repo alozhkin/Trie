@@ -55,6 +55,20 @@ public final class Trie {
         private void setWord(boolean bool) {
             isWord = bool;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Node node = (Node) o;
+            return isWord == node.isWord &&
+                    Objects.equals(children, node.children);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(children, isWord);
+        }
     }
 
     private Node root = new Node();
@@ -225,7 +239,7 @@ public final class Trie {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trie trie = (Trie) o;
-        return Objects.equals(this.findAll(), trie.findAll());
+        return Objects.equals(root, trie.root);
     }
 
     @Override
