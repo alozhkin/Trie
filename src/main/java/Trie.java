@@ -208,7 +208,7 @@ public final class Trie {
         TreeSet<Character> sortedRootSet = new TreeSet<>(rootSet);
         for (Character ch: sortedRootSet) {
             sb.append("[");
-            //if root have at least one child, it have at least one word.
+            //if root has at least one child, it has at least one word.
             TreeSet<String> sortedStringSet = new TreeSet<>(findAllWithPrefix(ch.toString()));
             for(String str: sortedStringSet) {
                 sb.append("(").append(str).append(") ");
