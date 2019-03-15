@@ -4,18 +4,17 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class TrieTest {
 
     @Test
     public void findTest() {
-        HashMap<Character, Trie.Node> map = new HashMap<>();
-        ArrayList<Character> l = new ArrayList<>();
-        l.add('b');
-        l.add('f');
-        l.add('h');
-        map.put('a', new Trie.Node(l));
-        Trie tr = new Trie(map);
+        HashSet<Character> set = new HashSet<>();
+        set.add('b');
+        set.add('f');
+        set.add('h');
+        Trie tr = new Trie('a', set);
         Assert.assertTrue(tr.find("ab"));
         Assert.assertTrue(tr.find("af"));
         Assert.assertTrue(tr.find("ah"));
@@ -36,10 +35,9 @@ public class TrieTest {
         Assert.assertTrue(tri.find("asdf"));
         tri.add("aser");
         tri.add("aerr");
-        //check that 'a' have 2 children
-        Assert.assertEquals(2, tri.findNode("a").children.size());
-        Assert.assertFalse(tri.findNode("a").isWord);
-        Assert.assertTrue(tri.findNode("aerr").isWord);
+        Assert.assertFalse(tri.findNode("a").isWord());
+        Assert.assertTrue(tri.findNode("aerr").isWord());
+        Assert.assertEquals(2, tri.findNode("a").getNumberOfChildren());
         tri.add("");
         Assert.assertFalse(tri.find(""));
     }
@@ -49,7 +47,7 @@ public class TrieTest {
         Trie trie = new Trie();
         trie.add("asd#$%@");
         trie.delete("asd#$%@");
-        Assert.assertEquals("", trie.toString());
+        Assert.assertEquals("[]", trie.toString());
         //make sure that all useless nodes are deleted
         Assert.assertNull(trie.findNode("a"));
         trie.delete("");
@@ -75,18 +73,52 @@ public class TrieTest {
         Assert.assertEquals(temp, trie.toString());
     }
 
-    @Test public void findAllTest() {
+    @Test
+    public void findAllWithPrefixTest() {
         Trie tr = new Trie();
+        Assert.assertNull(tr.findAllWithPrefix("/"));
         tr.add("asdfg");
         tr.add("asdcvbnm7&89e$3#n/");
         tr.add("asd.:'[][(*@$#!^*);");
         tr.add("bsd");
+        tr.add("asd");
         tr.add("asdftyuio");
         HashSet set = new HashSet();
         set.add("asdfg");
         set.add("asdcvbnm7&89e$3#n/");
         set.add("asd.:'[][(*@$#!^*);");
         set.add("asdftyuio");
+        set.add("asd");
         Assert.assertEquals(set, tr.findAllWithPrefix("asd"));
+        Assert.assertNull(tr.findAllWithPrefix("dddd"));
+    }
+
+    @Test
+    public void equalsTest() {
+        Trie trie1 = new Trie();
+        Trie trie2 = new Trie();
+        Assert.assertEquals(trie1, trie2);
+        HashSet<Character> set = new HashSet<>();
+        set.add('b');
+        set.add('f');
+        set.add('h');
+        Trie tr1 = new Trie('a', set);
+        Trie tr2 = new Trie('a', set);
+        Assert.assertEquals(tr1, tr2);
+        tr1.delete("ab");
+        Assert.assertNotEquals(tr1, tr2);
+    }
+
+    @Test
+    public void toStringTest() {
+        Trie tr = new Trie();
+        tr.add("a");
+        Assert.assertEquals("[(a)]", tr.toString());
+        tr.delete("a");
+        Assert.assertEquals("[]", tr.toString());
+        tr.add("sea");
+        tr.add("see");
+        tr.add("bus");
+        Assert.assertEquals("[(bus)] [(sea) (see)]", tr.toString());
     }
 }
